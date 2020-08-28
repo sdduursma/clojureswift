@@ -23,6 +23,21 @@
 (defmethod emit-constant* nil [_]
   (emits "nil"))
 
+(defmethod emit-constant* Long [x]
+  (emits x))
+
+;; TODO: Integers?
+
+(defmethod emit-constant* Double [x]
+  (let [x (double x)]
+    (cond
+      ;; TODO: Double.nan or Double.signalingNaN?
+      (Double/isNaN x) (emits "Double.nan")
+      (Double/isInfinite x) (emits (if (pos? x)
+                                     "Double.infinity"
+                                     "(-Double.infinity)"))
+      :else (emits x))))
+
 (defmethod emit-constant* Boolean [x]
   (emits (if x "true" "false")))
 
