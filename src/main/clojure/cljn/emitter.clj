@@ -64,6 +64,22 @@
    (doseq [x xs] (emits x))
    (_emitln)))
 
+(defmethod -emit :if
+  [{:keys [test then else env]}]
+  (let [context (:context env)
+        test-sym (gensym "test_")]
+    (if (isa? context :ctx/expr)
+      (do (emitln "{ () -> Any? in")
+          (emitln "let " test-sym " = " test)
+          (emitln "return (" test-sym " != nil && (" test-sym " as? Bool ?? true)) ? " then " : " else)
+          (emitln "}"))
+      (do (emitln "let " test-sym " = " test ";")
+          (emitln "if (" test-sym " != nil && (" test-sym " as? Bool ?? true)) {")
+          (emit then)
+          (emitln "} else {")
+          (emit else)
+          (emitln "}")))))
+
 (defmacro emit-contextually
   "Macro that wraps its body with, for example, 'return' and ';', depending on the context."
   [env & body]
