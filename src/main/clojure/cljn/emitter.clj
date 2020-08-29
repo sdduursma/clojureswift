@@ -10,8 +10,6 @@
 (defn emit [ast]
   (-emit ast))
 
-(def emitln println)
-
 (defn emits
   ([])
   ([^Object a]
