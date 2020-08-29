@@ -3,4 +3,4 @@
             [cljn.emitter :refer [emit]]))
 
 (defn compile [form]
-  (emit (ana/analyze form {}) {}))
+  (emit (ana/analyze form {})))

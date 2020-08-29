@@ -1,9 +1,9 @@
 (ns cljn.emitter)
 
-(defmulti -emit (fn [{:keys [op]} _] op))
+(defmulti -emit (fn [{:keys [op]}] op))
 
-(defn emit [ast frame]
-  (-emit ast frame))
+(defn emit [ast]
+  (-emit ast))
 
 (def emitln println)
 
@@ -55,15 +55,15 @@
   (emit-constant-no-meta v))
 
 (defmethod -emit :const
-  [{:keys [env form]} frame]
+  [{:keys [env form]}]
   (let [context (:context env)]
     (when-not (isa? context :ctx/statement)
       (emit-contextually env (emit-constant form)))))
 
 (defmethod -emit :do
-  [{:keys [statements ret env]} frame]
+  [{:keys [statements ret env]}]
   (let [context (:context env)]
     (when (and (seq statements) (isa? context :ctx/expr)) (emitln "({ () -> Any? in"))
-    (doseq [s statements] (emit s frame))
-    (emit ret frame)
+    (doseq [s statements] (emit s))
+    (emit ret)
     (when (and (seq statements) (= :expr context)) (emitln "})()"))))
