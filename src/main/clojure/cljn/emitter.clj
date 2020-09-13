@@ -133,6 +133,6 @@
   [{:keys [statements ret env]}]
   (let [context (:context env)]
     (when (and (seq statements) (isa? context :ctx/expr)) (emitln "({ () -> Any? in"))
-    (doseq [s statements] (emitln s))
+    (doseq [s statements] (emit s))
     (emit ret)
     (when (and (seq statements) (isa? context :ctx/expr)) (emitln "})()"))))
