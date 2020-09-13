@@ -62,6 +62,28 @@
    (doseq [x xs] (emits x))
    (_emitln)))
 
+(defn emit-let
+  [{:keys [bindings body env]} is-loop]
+  (let [context (:context env)]
+    (when (isa? context :ctx/expr) (emitln "({ () -> Any? in"))
+    (doseq [{:keys [init] :as binding} bindings]
+      (emitln "do {")
+      ;; TODO: Can it be a let?
+      (emits "var ")
+      (emits (:name binding))
+      (emitln " = " init ";"))
+    (when is-loop (emitln "while(true) {"))
+    (emits body)
+    (when is-loop
+      (emitln "break;")
+      (emitln "}"))
+    (doseq [_ bindings]
+      (emitln "}"))
+    (when (isa? context :ctx/expr) (emits "})()"))))
+
+(defmethod -emit :let [ast]
+  (emit-let ast false))
+
 (defmethod -emit :if
   [{:keys [test then else env]}]
   (let [context (:context env)
