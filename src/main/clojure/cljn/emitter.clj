@@ -62,6 +62,14 @@
    (doseq [x xs] (emits x))
    (_emitln)))
 
+(defmacro emit-contextually
+  "Macro that wraps its body with, for example, 'return' and ';', depending on the context."
+  [env & body]
+  `(let [env# ~env]
+     (when (isa? (:context env#) :ctx/return) (emits "return "))
+     ~@body
+     (when-not (= (:context env#) :ctx/expr) (emitln ";"))))
+
 (defn emit-let
   [{:keys [bindings body env]} is-loop]
   (let [context (:context env)]
@@ -99,14 +107,6 @@
           (emitln "} else {")
           (emit else)
           (emitln "}")))))
-
-(defmacro emit-contextually
-  "Macro that wraps its body with, for example, 'return' and ';', depending on the context."
-  [env & body]
-  `(let [env# ~env]
-     (when (isa? (:context env#) :ctx/return) (emits "return "))
-     ~@body
-     (when-not (= (:context env#) :ctx/expr) (emitln ";"))))
 
 ;; Why class instead of type?
 (defmulti emit-constant* class)
