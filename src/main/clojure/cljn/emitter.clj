@@ -135,4 +135,4 @@
     (when (and (seq statements) (isa? context :ctx/expr)) (emitln "({ () -> Any? in"))
     (doseq [s statements] (emitln s))
     (emit ret)
-    (when (and (seq statements) (= :expr context)) (emitln "})()"))))
+    (when (and (seq statements) (isa? context :ctx/expr)) (emitln "})()"))))
