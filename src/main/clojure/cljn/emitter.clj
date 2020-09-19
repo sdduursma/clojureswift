@@ -7,8 +7,19 @@
 
 (defmulti -emit (fn [{:keys [op]}] op))
 
+(declare emits)
+(declare emitln)
+
+(defmacro emit-contextually
+  "Macro that wraps its body with, for example, 'return' and ';', depending on the env's context."
+  [env & body]
+  `(let [env# ~env]
+     (when (isa? (:context env#) :ctx/return) (emits "return "))
+     ~@body
+     (when-not (= (:context env#) :ctx/expr) (emitln ";"))))
+
 (defn emit [ast]
-  (-emit ast))
+  (emit-contextually (:env ast) (-emit ast)))
 
 (defn emits
   ([])
@@ -61,14 +72,6 @@
    (emits a) (emits b) (emits c) (emits d) (emits e)
    (doseq [x xs] (emits x))
    (_emitln)))
-
-(defmacro emit-contextually
-  "Macro that wraps its body with, for example, 'return' and ';', depending on the context."
-  [env & body]
-  `(let [env# ~env]
-     (when (isa? (:context env#) :ctx/return) (emits "return "))
-     ~@body
-     (when-not (= (:context env#) :ctx/expr) (emitln ";"))))
 
 (defn emit-let
   [{:keys [bindings body env]} is-loop]
@@ -149,7 +152,7 @@
   [{:keys [env form]}]
   (let [context (:context env)]
     (when-not (isa? context :ctx/statement)
-      (emit-contextually env (emit-constant form)))))
+      (emit-constant form))))
 
 (defmethod -emit :do
   [{:keys [statements ret env]}]
