@@ -135,6 +135,36 @@
 (defmethod emit-constant* Boolean [x]
   (emits (if x "true" "false")))
 
+(defn- escape-char [^Character c]
+  (let [cp (.hashCode c)]
+    ;; TODO: Check if espcape rules are appropriate for Swift.
+    (case cp
+      ; Handle printable escapes before ASCII
+      34 "\\\""
+      92 "\\\\"
+      ; Handle non-printable escapes
+      8 "\\b"
+      12 "\\f"
+      10 "\\n"
+      13 "\\r"
+      9 "\\t"
+      (if (< 31 cp 127)
+        c ; Print simple ASCII characters
+        (format "\\u%04X" cp) ; Any other character is Unicode
+        ))))
+
+(defn- escape-string [^CharSequence s]
+  (let [sb (StringBuilder. (count s))]
+    (doseq [c s]
+      (.append sb (escape-char c)))
+    (.toString sb)))
+
+(defn- wrap-in-double-quotes [x]
+  (str \" x \"))
+
+(defmethod emit-constant* String [x]
+  (emits (wrap-in-double-quotes (escape-string x))))
+
 (defmethod emit-constant* java.util.UUID [^java.util.UUID uuid]
   ;; Force unwrap is OK because we know uuid is actually a UUID.
   ;; Use different UUID implementation because Foundation.UUID returns uppercase strings?
