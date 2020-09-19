@@ -103,7 +103,7 @@
       (do (emitln "{ () -> Any? in")
           (emitln "let " test-sym " = " test)
           (emitln "return (" test-sym " != nil && (" test-sym " as? Bool ?? true)) ? " then " : " else)
-          (emitln "}"))
+          (emitln "}()"))
       (do (emitln "let " test-sym " = " test ";")
           (emitln "if (" test-sym " != nil && (" test-sym " as? Bool ?? true)) {")
           (emit then)
