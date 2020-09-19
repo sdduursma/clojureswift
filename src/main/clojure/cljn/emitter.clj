@@ -161,3 +161,12 @@
     (doseq [s statements] (emit s))
     (emit ret)
     (when (and (seq statements) (isa? context :ctx/expr)) (emitln "})()"))))
+
+(defn emit-local [name]
+  (emits name))
+
+(defmethod -emit :local
+  [{:keys [name env]}]
+  (let [context (:context env)]
+    (when-not (isa? context :ctx/statement)
+      (emit-local name))))
