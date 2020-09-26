@@ -73,6 +73,13 @@
    (doseq [x xs] (emits x))
    (_emitln)))
 
+;; TODO: Implement
+(defn munge
+  ([s]
+   s)
+  ([s reserved]
+   s))
+
 (defn emit-let
   [{:keys [bindings body env]} is-loop]
   (let [context (:context env)]
@@ -200,3 +207,17 @@
   (let [context (:context env)]
     (when-not (isa? context :ctx/statement)
       (emit-local name))))
+
+(defn- comma-sep [xs]
+  (interpose "," xs))
+
+(defn emit-dot
+  [{:keys [target field method args env]}]
+  (if field
+    (emits target "." (munge field #{}))
+    (emits target "." (munge method #{}) "("
+           (comma-sep args)
+           ")")))
+
+(defmethod -emit :host-field [ast] (emit-dot ast))
+(defmethod -emit :host-call [ast] (emit-dot ast))
