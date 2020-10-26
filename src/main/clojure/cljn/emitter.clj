@@ -1,4 +1,5 @@
 (ns cljn.emitter
+  (:require [clojure.string :as str])
   (:import (java.util.concurrent.atomic AtomicLong)
            (java.io Writer)))
 
@@ -219,9 +220,12 @@
   [{:keys [target field method args env]}]
   (if field
     (emits target "." (munge field #{}))
-    (emits target "." (munge method #{}) "("
-           (comma-sep args)
-           ")")))
+    (let [[method-name & arg-labels] (str/split (name method) #"\:")
+          colons (repeat ": ")
+          commas (repeat ", ")]
+      (emits target "." (munge method-name #{}) "("
+           (drop-last (interleave arg-labels colons args commas))
+           ")"))))
 
 (defmethod -emit :host-field [ast] (emit-dot ast))
 (defmethod -emit :host-call [ast] (emit-dot ast))
