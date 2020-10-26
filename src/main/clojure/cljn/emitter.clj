@@ -208,6 +208,10 @@
     (when-not (isa? context :ctx/statement)
       (emit-local name))))
 
+(defmethod -emit :maybe-class
+  [{:keys [class]}]
+  (emits class))
+
 (defn- comma-sep [xs]
   (interpose "," xs))
 
