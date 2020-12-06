@@ -195,10 +195,10 @@
 (defmethod -emit :do
   [{:keys [statements ret env]}]
   (let [context (:context env)]
-    (when (and (seq statements) (isa? context :ctx/expr)) (emitln "({ () -> Any? in"))
+    (when (isa? context :ctx/expr) (emitln "({ () -> Any? in"))
     (doseq [s statements] (emit s))
     (emit ret)
-    (when (and (seq statements) (isa? context :ctx/expr)) (emitln "})()"))))
+    (when (isa? context :ctx/expr) (emitln "})()"))))
 
 (defn emit-local [name]
   (emits name))
