@@ -170,6 +170,10 @@
 (defn- wrap-in-double-quotes [x]
   (str \" x \"))
 
+(defmethod emit-constant* Character [x]
+  ;; TODO: Probably better to emit a literal, however this requires explicitly specifying the type in the binding.
+  (emits "Character(" (wrap-in-double-quotes (escape-char x)) ")"))
+
 (defmethod emit-constant* String [x]
   (emits (wrap-in-double-quotes (escape-string x))))
 
