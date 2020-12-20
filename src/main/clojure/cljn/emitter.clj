@@ -231,6 +231,9 @@
            (drop-last (interleave arg-labels colons args commas))
            ")"))))
 
+(defmethod -emit :host-field [ast] (emit-dot ast))
+(defmethod -emit :host-call [ast] (emit-dot ast))
+
 (defmethod -emit :deftype
   [{:keys [form name class-name nsobject swift-protocols fields methods env]}]
   (emits "class " name)
@@ -241,6 +244,3 @@
       (emits ": " (comma-sep nsobject-swift-protocols)))
     (emitln " {")
     (emitln "}")))
-
-(defmethod -emit :host-field [ast] (emit-dot ast))
-(defmethod -emit :host-call [ast] (emit-dot ast))
