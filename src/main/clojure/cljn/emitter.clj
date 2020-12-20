@@ -81,6 +81,13 @@
   ([s reserved]
    s))
 
+(defmethod -emit :binding
+  [{:keys [local name mutable]}]
+  (case local
+    ;; TODO: Support mutable
+    ;; TODO: Support type (hints)
+    :field (emitln "let " name ": Any?")))
+
 (defn emit-let
   [{:keys [bindings body env]} is-loop]
   (let [context (:context env)]
@@ -243,4 +250,6 @@
     (when (not (empty? nsobject-swift-protocols))
       (emits ": " (comma-sep nsobject-swift-protocols)))
     (emitln " {")
+    (doseq [f fields]
+      (emitln f))
     (emitln "}")))
