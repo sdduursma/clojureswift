@@ -231,5 +231,16 @@
            (drop-last (interleave arg-labels colons args commas))
            ")"))))
 
+(defmethod -emit :deftype
+  [{:keys [form name class-name nsobject swift-protocols fields methods env]}]
+  (emits "class " name)
+  ;; Superclass needs to be first
+  (let [nsobject-swift-protocols (into (if nsobject [nsobject] [])
+                                       swift-protocols)]
+    (when (not (empty? nsobject-swift-protocols))
+      (emits ": " (comma-sep nsobject-swift-protocols)))
+    (emitln " {")
+    (emitln "}")))
+
 (defmethod -emit :host-field [ast] (emit-dot ast))
 (defmethod -emit :host-call [ast] (emit-dot ast))
