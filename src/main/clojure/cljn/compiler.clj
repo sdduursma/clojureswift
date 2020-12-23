@@ -24,5 +24,6 @@
                   [first rest count]
                   :implements
                   [NSObject Codable]
-                  (isEqual [this o] false))
+                  (isEqual [this o] false)
+                  (peel [this x y z] nil))
            {:context :ctx/statement}))

@@ -84,9 +84,10 @@
 (defmethod -emit :binding
   [{:keys [local name mutable]}]
   (case local
+    :arg (emits "_ " (munge name) ": Any?")
     ;; TODO: Support mutable
     ;; TODO: Support type (hints)
-    :field (emitln "let " name ": Any?")))
+    :field (emits "let " name ": Any?")))
 
 (defn emit-let
   [{:keys [bindings body env]} is-loop]
@@ -241,8 +242,18 @@
 (defmethod -emit :host-field [ast] (emit-dot ast))
 (defmethod -emit :host-call [ast] (emit-dot ast))
 
+(defmethod -emit :method
+  [{:keys [form name params body]}]
+  ;; TODO: Infer throwing from protocol.
+  ;; TODO: Access control
+  ;; TODO: Infer return type from protocol.
+  (emitln "func " (munge name) "(" (comma-sep params) ") -> Any? {")
+  (emits body)
+  (emitln "}"))
+
 (defmethod -emit :deftype
   [{:keys [form name class-name nsobject swift-protocols fields methods env]}]
+  ;; TODO: Access control
   (emits "class " name)
   ;; Superclass needs to be first
   (let [nsobject-swift-protocols (into (if nsobject [nsobject] [])
@@ -250,6 +261,21 @@
     (when (not (empty? nsobject-swift-protocols))
       (emits ": " (comma-sep nsobject-swift-protocols)))
     (emitln " {")
-    (doseq [f fields]
-      (emitln f))
+    (when (not (empty? fields))
+      (doseq [f fields]
+        (emits f))
+      ;; TODO: Here we pretend that there are AST nodes for the init params.
+      ;; Does this really make sense? What if the fieds' AST contains data that doesn't apply to the
+      ;; init params?
+      (let [init-params (mapv (fn [f] (-> f
+                                          (assoc :local :arg)
+                                          (assoc-in [:env :context] :ctx/expr)))
+                              fields)]
+        ;; TODO: Access control
+        (emitln "init(" (comma-sep init-params) ") {")
+        (doseq [f fields]
+          (emitln "self." (munge (:name f)) " = " (munge (:name f)) ";"))
+        (emitln "}")))
+    (doseq [m methods]
+      (emitln m))
     (emitln "}")))
