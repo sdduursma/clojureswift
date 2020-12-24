@@ -10,13 +10,14 @@
 
 (comment
   (ana/analyze '(deftype*
-                  user/PersistentList
-                  user.PersistentList
+                  Banana
+                  Banana
                   [first rest count]
                   :implements
-                  [NSObject]
-                  (isEqual [this o] false))
-               {})
+                  [NSObject Codable]
+                  (isEqual [this o] false)
+                  (peel [this x y z] nil))
+               {:context :ctx/statement})
 
   (compile '(deftype*
                   Banana
@@ -26,4 +27,19 @@
                   [NSObject Codable]
                   (isEqual [this o] false)
                   (peel [this x y z] nil))
-           {:context :ctx/statement}))
+           {:context :ctx/statement})
+  (compile '(let [a 42]
+              a)
+           {:context :ctx/expr})
+  (compile '(in-ns 'user))
+  (compile '(deftype*
+              Fraction
+              Fraction
+              [numerator denominator]
+              :implements
+              [NSObject]
+              (description [this]
+                (.appending numerator "/" denominator)))
+           {:context    :ctx/statement
+            :locals     {}
+            :ns         'user}))
