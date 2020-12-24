@@ -20,7 +20,7 @@
      (when-not (= (:context env#) :ctx/expr) (emitln ";"))))
 
 (defn emit [ast]
-  (emit-contextually (:env ast) (-emit ast)))
+  (-emit ast))
 
 (defn emits
   ([])
@@ -87,7 +87,7 @@
     :arg (emits "_ " (munge name) ": Any?")
     ;; TODO: Support mutable
     ;; TODO: Support type (hints)
-    :field (emits "let " name ": Any?")))
+    :field (emitln "let " name ": Any?;")))
 
 (defn emit-let
   [{:keys [bindings body env]} is-loop]
@@ -248,7 +248,7 @@
   ;; TODO: Access control
   ;; TODO: Infer return type from protocol.
   (emitln "func " (munge name) "(" (comma-sep params) ") -> Any? {")
-  (emits body)
+  (emit body)
   (emitln "}"))
 
 (defmethod -emit :deftype
@@ -263,7 +263,7 @@
     (emitln " {")
     (when (not (empty? fields))
       (doseq [f fields]
-        (emits f))
+        (emit f))
       ;; TODO: Here we pretend that there are AST nodes for the init params.
       ;; Does this really make sense? What if the fieds' AST contains data that doesn't apply to the
       ;; init params?
