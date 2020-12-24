@@ -205,12 +205,16 @@
       (emit-constant form))))
 
 (defmethod -emit :do
-  [{:keys [statements ret env]}]
+  [{:keys [statements ret body? env]}]
   (let [context (:context env)]
-    (when (isa? context :ctx/expr) (emitln "({ () -> Any? in"))
+    (when (and (isa? context :ctx/expr)
+               (not body?))
+      (emitln "({ () -> Any? in"))
     (doseq [s statements] (emit s))
-    (emit ret)
-    (when (isa? context :ctx/expr) (emitln "})()"))))
+    (emitln "return " ret ";")
+    (when (and (isa? context :ctx/expr)
+               (not body?))
+      (emitln "})()"))))
 
 (defn emit-local [name]
   (emits name))
