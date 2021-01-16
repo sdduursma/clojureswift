@@ -247,7 +247,10 @@
 (defmethod -emit :host-call [ast] (emit-dot ast))
 
 (defmethod -emit :method
-  [{:keys [form name params body]}]
+  [{:keys [form protocol-or-nsobject name params body]}]
+  ;; TODO: Use fully qualified symbol of NSObject?
+  (when (= protocol-or-nsobject 'NSObject)
+    (emits "override "))
   ;; TODO: Infer throwing from protocol.
   ;; TODO: Access control
   ;; TODO: Infer return type from protocol.
@@ -255,8 +258,24 @@
   (emit body)
   (emitln "}"))
 
+(comment
+  (emitln
+    "func " (munge name) "(" (comma-sep params) ") -> "
+    (if-let [tag (:tag (meta name))]
+      (str tag)
+      "Any")
+    (if (not (:nonnul (meta name)))
+      "?"
+      "")
+    " {"))
+
+(defmethod -emit :type-spec
+  [{:keys [methods]}]
+  (doseq [m methods]
+    (emitln m)))
+
 (defmethod -emit :deftype
-  [{:keys [form name class-name nsobject swift-protocols fields methods env]}]
+  [{:keys [form name class-name nsobject swift-protocols fields specs env]}]
   ;; TODO: Access control
   (emits "class " name)
   ;; Superclass needs to be first
@@ -280,8 +299,8 @@
         (doseq [f fields]
           (emitln "self." (munge (:name f)) " = " (munge (:name f)) ";"))
         (emitln "}")))
-    (doseq [m methods]
-      (emitln m))
+    (doseq [s specs]
+      (emitln s))
     (emitln "}")))
 
 (defmethod -emit :def

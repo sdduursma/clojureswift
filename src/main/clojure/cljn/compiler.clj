@@ -41,9 +41,10 @@
                   Banana
                   [first rest count]
                   :implements
-                  [NSObject Codable]
-                  (isEqual [this o] false)
-                  (peel [this x y z] nil))
+                  (NSObject
+                    (^Bool isEqual [this o] false))
+                  (IBanana
+                   (peel [this x y z] nil)))
            {:context :ctx/statement})
   (compile '(let [a 42]
               a)
