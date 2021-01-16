@@ -283,3 +283,8 @@
     (doseq [m methods]
       (emitln m))
     (emitln "}")))
+
+(defmethod -emit :def
+  [{:keys [form name init env]}]
+  ;; TODO: Support def in non-top-level code
+  (emitln "var " (munge name) " = " init))
