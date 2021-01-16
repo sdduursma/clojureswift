@@ -1,6 +1,16 @@
 (ns cljn.compiler-test
   (:require [clojure.test :refer :all]
-            [cljn.compiler :as c]))
+            [cljn.compiler :as c]
+            [cljn.emitter :as e]
+            [clojure.tools.analyzer.env :as env]
+            [clojure.tools.analyzer :refer [empty-env]]
+            [clojure-n.tools.analyzer.swift :refer [global-env analyze]]))
+
+(defn emit [ast]
+      (env/ensure (e/emit ast)))
+
+(def aenv (assoc-in (empty-env) [:ns] 'cljs.user))
+(def cenv (global-env))
 
 (deftest test-compiler
   (let [uuid #uuid "1369709c-2bdc-4e35-9ae1-1cde9068f672"]
@@ -14,3 +24,12 @@
                          a)
                       {:context :ctx/return}))
          (str "return ({ () -> Any? in do { var a = \"abc\".uppercased(); return a; } }()); \n")))))
+
+(comment
+  (analyze '(def ans 42)
+           aenv)
+  (c/compile '(def ans 42) aenv)
+  (e/emit (analyze '(def ans 42) aenv))
+  (env/with-env cenv
+                (e/emit (analyze '(def ans 42)
+                                 aenv))))
