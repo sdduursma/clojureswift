@@ -1,7 +1,7 @@
 (ns cljn.compiler
   (:require [clojure.tools.analyzer :refer [empty-env]]
             [clojure.tools.analyzer.env :as env]
-            [clojure-n.tools.analyzer.swift :as ana]
+            [clojure.tools.analyzer.swift :as ana]
             [cljn.emitter :refer [emit]]))
 
 (defn compile
@@ -31,11 +31,16 @@
                   Banana
                   [first rest count]
                   :implements
-                  [NSObject Codable]
-                  (isEqual [this o] false)
-                  (peel [this x y z] nil))
-               {:context :ctx/statement})
-
+                  (NSObject
+                    (^Bool isEqual [this o] false))
+                  #_(IBanana
+                    (peel [this x y z] nil)))
+               #_{:context :ctx/statement})
+  (-> (macroexpand '(deftype Banana [foo bar] NSObject (^Bool isEqual [this o] false)))
+      (nth 2)
+      (nth 6)
+      first
+      meta)
   (compile '(deftype*
                   Banana
                   Banana
@@ -45,7 +50,7 @@
                     (^Bool isEqual [this o] false))
                   (IBanana
                    (peel [this x y z] nil)))
-           {:context :ctx/statement})
+           #_{:context :ctx/statement})
   (compile '(let [a 42]
               a)
            {:context :ctx/expr})

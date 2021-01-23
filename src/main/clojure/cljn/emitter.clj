@@ -247,27 +247,21 @@
 (defmethod -emit :host-call [ast] (emit-dot ast))
 
 (defmethod -emit :method
-  [{:keys [form protocol-or-nsobject name params body]}]
+  [{:keys [form protocol-or-nsobject name params tag body]}]
   ;; TODO: Use fully qualified symbol of NSObject?
   (when (= protocol-or-nsobject 'NSObject)
     (emits "override "))
   ;; TODO: Infer throwing from protocol.
   ;; TODO: Access control
   ;; TODO: Infer return type from protocol.
-  (emitln "func " (munge name) "(" (comma-sep params) ") -> Any? {")
-  (emit body)
-  (emitln "}"))
-
-(comment
   (emitln
     "func " (munge name) "(" (comma-sep params) ") -> "
-    (if-let [tag (:tag (meta name))]
+    (if tag
       (str tag)
       "Any")
-    (if (not (:nonnul (meta name)))
-      "?"
-      "")
-    " {"))
+    "? {")
+  (emit body)
+  (emitln "}"))
 
 (defmethod -emit :type-spec
   [{:keys [methods]}]
