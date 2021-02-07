@@ -258,8 +258,8 @@
     "func " (munge name) "(" (comma-sep params) ") -> "
     (if tag
       (str tag)
-      "Any")
-    "? {")
+      "Any?")
+    "{")
   (emit body)
   (emitln "}"))
 
