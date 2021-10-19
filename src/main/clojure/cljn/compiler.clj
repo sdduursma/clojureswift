@@ -2,7 +2,8 @@
   (:require [clojure.tools.analyzer :refer [empty-env]]
             [clojure.tools.analyzer.env :as env]
             [clojure.tools.analyzer.swift :as ana]
-            [cljn.emitter :refer [emit]]))
+            [cljn.emitter :refer [emit]]
+            [cljs.analyzer.api :as cljs-ana]))
 
 (defn compile
   ([form]
@@ -36,6 +37,9 @@
                   #_(IBanana
                     (peel [this x y z] nil)))
                #_{:context :ctx/statement})
+  (cljs-ana/analyze
+    (cljs-ana/empty-env)
+    '(let [x 42] x))
   (-> (macroexpand '(deftype Banana [foo bar] NSObject (^Bool isEqual [this o] false)))
       (nth 2)
       (nth 6)
