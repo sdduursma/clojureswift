@@ -70,3 +70,27 @@ self.x = x;
 }
 }
 ")))
+
+(deftest test-emit-dot-method
+  (is (= (with-out-str
+           (-emit {:args [],
+                   :children [:target :args],
+                   :method 'uppercased,
+                   :op :host-call,
+                   :top-level true,
+                   :form '(. "foo" uppercased),
+                   :target {:op :const, :env {:context :ctx/expr}, :type :string, :literal? true, :val "foo", :form "foo"},
+                   :raw-forms '((.uppercased "foo"))}))
+         "\"foo\".uppercased()")))
+
+(deftest test-emit-dot-field
+  (is (= (with-out-str
+           (-emit {:children [:target],
+                   :field 'count,
+                   :op :host-field,
+                   :top-level true,
+                   :form '(. "foo" -count),
+                   :target {:op :const, :env {:context :ctx/expr}, :type :string, :literal? true, :val "foo", :form "foo"},
+                   :assignable? true,
+                   :raw-forms '((.-count "foo"))}))
+         "\"foo\".count")))
