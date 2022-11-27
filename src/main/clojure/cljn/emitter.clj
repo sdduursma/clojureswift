@@ -75,7 +75,7 @@
    (_emitln)))
 
 ;; TODO: Implement
-(defn munge
+(defn munge-name
   ([s]
    s)
   ([s reserved]
@@ -84,7 +84,7 @@
 (defmethod -emit :binding
   [{:keys [local name mutable]}]
   (case local
-    :arg (emits "_ " (munge name) ": Any?")
+    :arg (emits "_ " (munge-name name) ": Any?")
     ;; TODO: Support mutable
     ;; TODO: Support type (hints)
     :field (emitln "let " name ": Any?;")))
@@ -235,13 +235,13 @@
 (defn emit-dot
   [{:keys [target field method args env]}]
   (if field
-    (emits target "." (munge field #{}))
+    (emits target "." (munge-name field #{}))
     (let [[method-name & arg-labels] (str/split (name method) #"\:")
           colons (repeat ": ")
           commas (repeat ", ")]
-      (emits target "." (munge method-name #{}) "("
-           (drop-last (interleave arg-labels colons args commas))
-           ")"))))
+      (emits target "." (munge-name method-name #{}) "("
+             (drop-last (interleave arg-labels colons args commas))
+             ")"))))
 
 (defmethod -emit :host-field [ast] (emit-dot ast))
 (defmethod -emit :host-call [ast] (emit-dot ast))
@@ -255,7 +255,7 @@
   ;; TODO: Access control
   ;; TODO: Infer return type from protocol.
   (emitln
-    "func " (munge name) "(" (comma-sep params) ") -> "
+    "func " (munge-name name) "(" (comma-sep params) ") -> "
     (if tag
       (str tag)
       "Any?")
@@ -291,7 +291,7 @@
         ;; TODO: Access control
         (emitln "init(" (comma-sep init-params) ") {")
         (doseq [f fields]
-          (emitln "self." (munge (:name f)) " = " (munge (:name f)) ";"))
+          (emitln "self." (munge-name (:name f)) " = " (munge-name (:name f)) ";"))
         (emitln "}")))
     (doseq [s specs]
       (emitln s))
@@ -300,4 +300,4 @@
 (defmethod -emit :def
   [{:keys [form name init env]}]
   ;; TODO: Support def in non-top-level code
-  (emitln "var " (munge name) " = " init))
+  (emitln "var " (munge-name name) " = " init))
