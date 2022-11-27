@@ -1,3 +1,4 @@
 {:paths ["src/main/clojure"]
- :deps {org.clojure-n/tools.analyzer.swift {:local/root "../tools.analyzer.swift"}
+ :deps {org.clojure-n/tools.analyzer.swift {:git/url "https://github.com/clojure-n/tools.analyzer.swift.git"
+                                            :git/sha "d1f597427f967f95b63c02bc85d063aceb32f511"}
         org.clojure/clojurescript {:mvn/version "1.10.764"}}}
