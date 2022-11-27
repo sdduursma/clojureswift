@@ -54,3 +54,19 @@
   (is (= (with-out-str
            (emit-constant* #uuid "1369709c-2bdc-4e35-9ae1-1cde9068f672"))
          "Foundation.UUID(uuidString: \"1369709c-2bdc-4e35-9ae1-1cde9068f672\")!")))
+
+(deftest test-emit-simple-type
+  (is (= (with-out-str
+           (-emit {:op :deftype
+                   :form '(deftype A [x])
+                   :name 'A
+                   :fields [{:op :binding
+                             :name 'x
+                             :local :field}]}))
+         "class A {
+let x: Any?;
+init(_ x: Any?) {
+self.x = x;
+}
+}
+")))
