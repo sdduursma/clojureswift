@@ -20,7 +20,7 @@
      (when-not (= (:context env#) :ctx/expr) (emitln ";"))))
 
 (defn emit [ast]
-  (-emit ast))
+  (emit-contextually (:env ast) (-emit ast)))
 
 (defn emits
   ([])
@@ -33,7 +33,7 @@
      :else (let [^String s (cond-> a (not (string? a)) .toString)]
              (when-some [^AtomicLong gen-col *source-map-data-gen-col*]
                (.addAndGet gen-col (.length s)))
-             (.write ^Writer *out* s)))
+             (.write ^Writer *out* s) (flush)))
    nil)
   ([a b]
    (emits a) (emits b))
@@ -87,7 +87,7 @@
     :arg (emits "_ " (munge-name name) ": Any?")
     ;; TODO: Support mutable
     ;; TODO: Support type (hints)
-    :field (emitln "let " name ": Any?;")))
+    :field (emits "let " name ": Any?")))
 
 (defn emit-let
   [{:keys [bindings body env]} is-loop]
