@@ -1,8 +1,8 @@
-(ns cljn.compiler
+(ns cljsw.compiler
   (:require [clojure.tools.analyzer :refer [empty-env]]
             [clojure.tools.analyzer.env :as env]
             [clojure-n.tools.analyzer.swift :as ana]
-            [cljn.emitter :refer [emit]]))
+            [cljsw.emitter :refer [emit]]))
 
 (defn compile
   ([form]

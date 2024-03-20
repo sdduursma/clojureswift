@@ -1,7 +1,7 @@
-(ns cljn.compiler-test
+(ns cljsw.compiler-test
   (:require [clojure.test :refer :all]
-            [cljn.compiler :as c]
-            [cljn.emitter :as e]
+            [cljsw.compiler :as c]
+            [cljsw.emitter :as e]
             [clojure.tools.analyzer.env :as env]
             [clojure.tools.analyzer :refer [empty-env]]
             [clojure-n.tools.analyzer.swift :refer [global-env analyze]]))
