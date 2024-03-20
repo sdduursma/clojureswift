@@ -1,6 +1,6 @@
-(ns cljsw.emitter-test
+(ns clojureswift.emitter-test
   (:require [clojure.test :refer :all]
-            [cljsw.emitter :refer :all]))
+            [clojureswift.emitter :refer :all]))
 
 (deftest test-emit-nil
   (is (= (with-out-str

@@ -1,4 +1,4 @@
-(ns cljsw.emitter
+(ns clojureswift.emitter
   (:require [clojure.string :as str])
   (:import (java.util.concurrent.atomic AtomicLong)
            (java.io Writer)))
