@@ -1,5 +1,5 @@
 {:paths ["src/main/clojure"]
- :deps {org.clojure-n/tools.analyzer.swift {:git/url "https://github.com/clojure-n/tools.analyzer.swift.git"
+ :deps {org.clojure-n/tools.analyzer.swift {:git/url "https://github.com/sdduursma/tools.analyzer.swift.git"
                                             :git/sha "a09194d34869148ad350bb085d79b953565ae36c"}
         org.clojure/clojurescript {:mvn/version "1.10.764"}}
 
