@@ -9,8 +9,8 @@
 
 (deftest test-emit-long
   (is (= (with-out-str
-           (emit-constant* 42)))
-      "42"))
+           (emit-constant* 42))
+         "42")))
 
 (deftest test-emit-double
   (is (= (with-out-str
