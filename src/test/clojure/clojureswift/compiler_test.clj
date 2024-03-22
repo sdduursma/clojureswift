@@ -26,4 +26,12 @@
   (e/emit (analyze '(def ans 42) aenv))
   (env/with-env cenv
                 (e/emit (analyze '(def ans 42)
-                                 aenv))))
+                                 aenv)))
+  (env/with-env cenv
+    (with-out-str (e/emit (analyze '(def ans 42)
+                                   aenv))))
+
+  (env/with-env cenv
+    (with-out-str (e/emit (analyze '(def id #uuid "1369709c-2bdc-4e35-9ae1-1cde9068f672")
+                                   aenv))))
+  ,)
