@@ -4,7 +4,7 @@
             [clojureswift.emitter :as e]
             [clojure.tools.analyzer.env :as env]
             [clojure.tools.analyzer :refer [empty-env]]
-            [clojure-n.tools.analyzer.swift :refer [global-env analyze]]))
+            [clojureswift.tools.analyzer.swift :refer [global-env analyze]]))
 
 (defn emit [ast]
       (env/ensure (e/emit ast)))

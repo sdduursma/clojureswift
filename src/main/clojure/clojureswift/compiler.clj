@@ -1,7 +1,7 @@
 (ns clojureswift.compiler
   (:require [clojure.tools.analyzer :refer [empty-env]]
             [clojure.tools.analyzer.env :as env]
-            [clojure-n.tools.analyzer.swift :as ana]
+            [clojureswift.tools.analyzer.swift :as ana]
             [clojureswift.emitter :refer [emit]]))
 
 (defn compile
