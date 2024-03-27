@@ -17,7 +17,7 @@ reader -> analyzer -> emitter
 * The analyzer analyzes the Clojure data and enriches it, outputting an AST.
 * The emitter walks the AST and emits the target code. In the case of Clojure, the emitter emits JVM bytecode; in the case of ClojureScript, JavaScript code; and in the case of ClojureSwift, Swift code.
 
-Fortunately, the Clojure compiler is very modular. ClojureSwift reuses the reader and tools.analyzer, which is a host host-agnostic analyzer for Clojure code. On top of it, it provides [tools.analyzer.swift](https://github.com/sdduursma/tools.analyzer.swift) for Swift-specific analysis, and a Swift-specific emitter.
+Fortunately, the Clojure compiler is very modular. ClojureSwift reuses the reader and tools.analyzer, which is a host-agnostic analyzer for Clojure code. On top of it, it provides [tools.analyzer.swift](https://github.com/sdduursma/tools.analyzer.swift) for Swift-specific analysis, and a Swift-specific emitter.
 
 Ultimately, the idea is that the emitter would automatically feed into the Swift compiler, which compiles the Swift code down to native code.
 
