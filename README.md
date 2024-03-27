@@ -35,4 +35,11 @@ is compiled to:
 var id = Foundation.UUID(uuidString: "1369709c-2bdc-4e35-9ae1-1cde9068f672")!
 ```
 
+## Development
+
+To run the tests:
+```bash
+clj -X:test:test/run
+```
+
 [^1]: At the time of this writing, there is also ClojureDart, but this didn't exist when I decided to prototype ClojureSwift.
