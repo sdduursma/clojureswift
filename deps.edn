@@ -1,7 +1,7 @@
 {:paths   ["src/main/clojure"]
- :deps    {org.sdduursma/tools.analyzer.swift {:git/url "https://github.com/sdduursma/tools.analyzer.swift.git"
-                                               :git/sha "86ea6809281ce69530becd3b093c5f4daaba144e"}
-           org.clojure/clojurescript          {:mvn/version "1.10.764"}}
+ :deps    {org.clojure/tools.analyzer {:git/url "https://github.com/sdduursma/tools.analyzer.git"
+                                       :git/sha "8b12f354e1d3eef18b1df1ecfb2b07ecf976cbaa"}
+           org.clojure/clojurescript  {:mvn/version "1.10.764"}}
 
  :aliases {:test     {:extra-paths ["src/test/clojure"]}
 
